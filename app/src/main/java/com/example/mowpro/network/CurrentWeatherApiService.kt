@@ -23,9 +23,9 @@ interface CurrentWeatherApiService {
 
     /**
      * Expected fields for the query.
-     * appid: String 'API Key'
-     * lat: +/- Float -> String
-     * lon: +/- Float -> String
+     * appid (required): String 'API Key'
+     * lat (required): +/- Float -> String
+     * lon (required): +/- Float -> String
      * units: String 'imperial'
      */
     @GET(CURRENT_WEATHER_API_PATH)
