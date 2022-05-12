@@ -9,6 +9,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.QueryMap
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -29,8 +30,7 @@ interface CurrentWeatherApiService {
      * units: String 'imperial'
      */
     @GET(CURRENT_WEATHER_API_PATH)
-    @FormUrlEncoded
-    suspend fun getCurrentWeatherData(@FieldMap params: Map<String, String>): CurrentWeatherData
+    suspend fun getCurrentWeatherData(@QueryMap params: Map<String, String>): CurrentWeatherData
 
 }
 
