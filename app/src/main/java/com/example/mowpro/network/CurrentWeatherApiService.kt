@@ -2,12 +2,13 @@ package com.example.mowpro.network
 
 import com.example.mowpro.CURRENT_WEATHER_API_PATH
 import com.example.mowpro.CURRENT_WEATHER_API_URL
+import com.example.mowpro.OPEN_WEATHER_API_KEY
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.QueryMap
+import retrofit2.http.Query
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -28,7 +29,10 @@ interface CurrentWeatherApiService {
      * units: String 'imperial'
      */
     @GET(CURRENT_WEATHER_API_PATH)
-    suspend fun getCurrentWeatherData(@QueryMap params: Map<String, String>): CurrentWeatherData
+    suspend fun getCurrentWeatherData(@Query("appid") api_key: String = OPEN_WEATHER_API_KEY,
+                                      @Query("units") unit_type: String = "imperial",
+                                      @Query("lat") latitude: String,
+                                      @Query("lon") longitude: String): CurrentWeatherData
 
 }
 
