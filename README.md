@@ -1,2 +1,2 @@
 # MowPro
-Android client management application.
+Android landscape client management application.
