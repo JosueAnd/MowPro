@@ -2,7 +2,6 @@ package com.example.mowpro.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.mowpro.WEATHER_ICON_API_URL
 import com.example.mowpro.network.CurrentWeatherApi
 import com.example.mowpro.network.CurrentWeatherApiStatus
 import kotlinx.coroutines.launch
@@ -12,17 +11,19 @@ import java.lang.IllegalArgumentException
 
 class WeatherCardViewModel: ViewModel() {
 
-    private val LogTag = "WeatherCardVM"
+    private val logTag = "WeatherCardVM"
 
     private val _currentWeatherData = MutableLiveData<CurrentWeatherData>()
     val currentWeatherData: LiveData<CurrentWeatherData> = _currentWeatherData
+    private val _weatherTemp = MutableLiveData<String>()
+    val weatherTemp: LiveData<String> = _weatherTemp
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
-    val status: LiveData<CurrentWeatherApiStatus> = _status
+//    val status: LiveData<CurrentWeatherApiStatus> = _status
 
-    init { getCurrentWeatherData() }
+    init { getTheCurrentWeatherData() }
 
-    private fun getCurrentWeatherData() {
+    private fun getTheCurrentWeatherData() {
         viewModelScope.launch {
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
@@ -31,30 +32,24 @@ class WeatherCardViewModel: ViewModel() {
                                            longitude = "25")
                 _status.value = CurrentWeatherApiStatus.DONE
             } catch (e: Exception) {
-                Log.d(LogTag, "Exception Caught: $e")
+                Log.d(logTag, "Exception Caught: $e")
                 _status.value = CurrentWeatherApiStatus.ERROR
                 _currentWeatherData.value = fakeWeatherData
             }
-            Log.d(LogTag, "viewModelScope.launch reached end")
-            Log.d(LogTag, currentWeatherData.value.toString())
+            Log.d(logTag, "viewModelScope.launch reached end")
+            Log.d(logTag, currentWeatherData.toString())
         }
-        Log.d(LogTag, "Exited viewModelScope.launch")
-    }
-
-    fun getWeatherIconUrl(): String? {
-        return currentWeatherData.value?.weatherIconName?.also {
-            return "$WEATHER_ICON_API_URL$it@2x.png"
-        }
+        Log.d(logTag, "Exited viewModelScope.launch")
     }
 }
 
 class WeatherCardViewModelFactory: ViewModelProvider.Factory {
 
-    private val LogTag = "WeatherCardVMF"
+    private val logTag = "WeatherCardVMF"
 
     override fun <T: ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WeatherCardViewModel::class.java)) {
-            Log.d(LogTag, "Factory created the ViewModel")
+            Log.d(logTag, "Factory created the ViewModel")
             @Suppress("UNCHECKED_CAST")
             return WeatherCardViewModel() as T
         }

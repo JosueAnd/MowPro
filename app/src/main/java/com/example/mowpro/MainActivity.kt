@@ -2,30 +2,23 @@ package com.example.mowpro
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.example.mowpro.databinding.ActivityMainBinding
-import com.example.mowpro.network.CurrentWeatherApi
-import com.example.mowpro.network.CurrentWeatherData
-import kotlinx.coroutines.runBlocking
+import com.example.mowpro.viewmodels.WeatherCardViewModel
+import com.example.mowpro.viewmodels.WeatherCardViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var weatherData: CurrentWeatherData
+    private val weatherVM: WeatherCardViewModel by viewModels { WeatherCardViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        runBlocking {
-            weatherData = CurrentWeatherApi.retrofitService.getCurrentWeatherData(
-                mapOf("appid" to OPEN_WEATHER_API_KEY,
-                      "lon" to "25",
-                      "lat" to "25",
-                      "units" to "imperial")
-            )
+        weatherVM.currentWeatherData.observe(this) {
+            binding.mainWeatherCard.weatherCurrentTemp.text = it.weatherCurrentTemp.toString()
         }
-
-        binding.mainWeatherCard.weatherCurrentTemp.text = weatherData.weatherCurrentTemp
     }
 }

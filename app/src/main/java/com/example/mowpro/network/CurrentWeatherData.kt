@@ -6,7 +6,7 @@ data class CurrentWeatherData(@Json(name = "weather") private val weatherDescrip
                               @Json(name = "main") private val weatherTemperatures: Map<String, Any>) {
 
     val weatherDescriptor: String = determineWeatherDescriptor("main")
-    val weatherCurrentTemp: Double = determineWeatherTemp("feels_like")
+    val weatherCurrentTemp: Double = determineWeatherTemp("temp")
     val weatherIconName: String = determineWeatherDescriptor("icon")
 
     private fun determineWeatherDescriptor(key:String): String {
