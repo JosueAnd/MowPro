@@ -48,13 +48,13 @@
             tools:text="69" />
 
         <TextView
-            android:id="@+id/weather_current_temp_decimal"
+            android:id="@+id/weather_degrees_f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/weather_text_temp_superscript"
             app:layout_constraintStart_toEndOf="@id/weather_current_temp"
             app:layout_constraintTop_toTopOf="@id/weather_current_temp"
-            tools:text=".5"/>
+            tools:text="\u2109" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/weather_city_state"-->
