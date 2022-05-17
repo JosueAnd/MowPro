@@ -17,8 +17,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        weatherVM.currentWeatherData.observe(this) {
-            binding.mainWeatherCard.weatherCurrentTemp.text = it.weatherCurrentTemp.toString()
+        binding.mainWeatherCard.apply {
+            weatherVM.weatherTemp.observe(this@MainActivity) { weatherCurrentTemp.text = it }
+            weatherVM.weatherDegreesF.observe(this@MainActivity) { weatherDegreesF.text = it }
         }
     }
 }

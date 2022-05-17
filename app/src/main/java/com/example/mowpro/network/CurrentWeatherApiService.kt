@@ -21,19 +21,11 @@ private val retrofit = Retrofit.Builder()
 
 interface CurrentWeatherApiService {
 
-    /**
-     * Expected fields for the query.
-     * appid (required): String 'API Key'
-     * lat (required): +/- Float -> String
-     * lon (required): +/- Float -> String
-     * units: String 'imperial'
-     */
     @GET(CURRENT_WEATHER_API_PATH)
     suspend fun getCurrentWeatherData(@Query("appid") api_key: String = OPEN_WEATHER_API_KEY,
                                       @Query("units") unit_type: String = "imperial",
                                       @Query("lat") latitude: String,
                                       @Query("lon") longitude: String): CurrentWeatherData
-
 }
 
 object CurrentWeatherApi {
@@ -41,5 +33,4 @@ object CurrentWeatherApi {
     val retrofitService: CurrentWeatherApiService by lazy {
         retrofit.create(CurrentWeatherApiService::class.java)
     }
-
 }
