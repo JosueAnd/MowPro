@@ -4,4 +4,5 @@
     <dimen name="weather_element_margin">5sp</dimen>
     <dimen name="weather_text_normal">15sp</dimen>
     <dimen name="weather_text_temp">30sp</dimen>
+    <dimen name="weather_text_temp_superscript">18sp</dimen>
 </resources>
