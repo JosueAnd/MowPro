@@ -16,7 +16,7 @@ class WeatherCardViewModel: ViewModel() {
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
 
     private var currentWeatherData = MutableLiveData<CurrentWeatherData>()
-    var weatherTemp: LiveData<String> = Transformations.map(currentWeatherData) { "${it.weatherCurrentTempInt.toInt()}" }
+    var weatherTemp: LiveData<String> = Transformations.map(currentWeatherData) { "${it.weatherCurrentTemp.toInt()}" }
     var weatherDegreesF: LiveData<String> = Transformations.map(currentWeatherData) { DEGREES_FAHRENHEIT }
 
     init {
