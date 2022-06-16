@@ -5,9 +5,8 @@ import androidx.lifecycle.*
 import com.example.mowpro.DEGREES_FAHRENHEIT
 import com.example.mowpro.network.CurrentWeatherApi
 import com.example.mowpro.network.CurrentWeatherApiStatus
-import kotlinx.coroutines.launch
 import com.example.mowpro.network.CurrentWeatherData
-import java.lang.IllegalArgumentException
+import kotlinx.coroutines.launch
 
 class WeatherCardViewModel: ViewModel() {
 
@@ -19,6 +18,18 @@ class WeatherCardViewModel: ViewModel() {
     private var currentWeatherData = MutableLiveData<CurrentWeatherData>()
     var weatherTemp: LiveData<String> = Transformations.map(currentWeatherData) { "${it.weatherCurrentTemp.toInt()}" }
     var weatherDegreesF: LiveData<String> = Transformations.map(currentWeatherData) { DEGREES_FAHRENHEIT }
+    var weatherDescription: LiveData<String> = Transformations.map(currentWeatherData) { cwd ->
+        val descriptors = cwd.weatherDescription.split(" ")
+        val newDescriptors = mutableListOf<String>()
+        descriptors.forEach { desc ->
+            newDescriptors.add(
+                desc.first().uppercase().plus(
+                    desc.slice(1 until desc.length).lowercase())
+            )
+        }
+        print(newDescriptors.joinToString(" "))
+        newDescriptors.joinToString(" ")
+    }
 
     init {
         viewModelScope.launch {
