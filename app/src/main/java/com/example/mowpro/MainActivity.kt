@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainWeatherCard.apply {
             weatherVM.weatherTemp.observe(this@MainActivity) { weatherCurrentTemp.text = it }
             weatherVM.weatherDegreesF.observe(this@MainActivity) { weatherDegreesF.text = it }
+            weatherVM.weatherDescription.observe(this@MainActivity) { weatherDescription.text = it }
         }
     }
 }
