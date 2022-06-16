@@ -29,14 +29,14 @@
 <!--            app:layout_constraintTop_toTopOf="parent"-->
 <!--            tools:src="@drawable/ic_launcher_foreground" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/weather_description"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="@dimen/weather_text_normal"-->
-<!--            app:layout_constraintStart_toEndOf="@id/weather_icon"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/weather_current_temp"-->
-<!--            tools:text="Cloudy" />-->
+        <TextView
+            android:id="@+id/weather_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/weather_text_normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Cloudy" />
 
         <TextView
             android:id="@+id/weather_current_temp"
