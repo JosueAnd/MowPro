@@ -27,7 +27,6 @@ class WeatherCardViewModel: ViewModel() {
                     desc.slice(1 until desc.length).lowercase())
             )
         }
-        print(newDescriptors.joinToString(" "))
         newDescriptors.joinToString(" ")
     }
 
