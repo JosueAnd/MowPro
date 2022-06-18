@@ -20,14 +20,14 @@
         android:layout_margin="@dimen/weather_element_margin"
         android:padding="@dimen/weather_element_margin">
 
-<!--        <ImageView-->
-<!--            android:id="@+id/weather_icon"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:contentDescription="@string/weather_icon"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:src="@drawable/ic_launcher_foreground" />-->
+        <ImageView
+            android:id="@+id/weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/weather_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_launcher_foreground" />
 
         <TextView
             android:id="@+id/weather_description"
