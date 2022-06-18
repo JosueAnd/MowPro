@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/weather_text_normal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Cloudy" />
 
         <TextView
