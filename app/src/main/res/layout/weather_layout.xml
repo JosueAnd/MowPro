@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/weather_icon"
+            app:layout_constraintBottom_toTopOf="@+id/weather_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_launcher_foreground" />
@@ -39,7 +40,7 @@
             tools:text="Cloudy" />
 
         <TextView
-            android:id="@+id/weather_current_temp"
+            android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/weather_text_temp"
@@ -48,12 +49,13 @@
             tools:text="69" />
 
         <TextView
-            android:id="@+id/weather_degrees_f"
+            android:id="@+id/weather_scale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/weather_element_margin"
             android:textSize="@dimen/weather_text_temp_superscript"
-            app:layout_constraintStart_toEndOf="@id/weather_current_temp"
-            app:layout_constraintTop_toTopOf="@id/weather_current_temp"
+            app:layout_constraintStart_toEndOf="@id/temperature"
+            app:layout_constraintTop_toTopOf="@id/temperature"
             tools:text="\u2109" />
 
 <!--        <TextView-->
