@@ -14,12 +14,10 @@ class WeatherCardViewModel: ViewModel() {
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
     val status: LiveData<CurrentWeatherApiStatus> = _status
-
-    private var currentWeatherData = MutableLiveData<CurrentWeatherData>()
-    var weatherTemp: LiveData<String> = Transformations.map(currentWeatherData) { "${it.weatherCurrentTemp.toInt()}" }
-    var weatherDegreesF: LiveData<String> = Transformations.map(currentWeatherData) { DEGREES_FAHRENHEIT }
-    var weatherDescription: LiveData<String> = Transformations.map(currentWeatherData) { cwd ->
-        val descriptors = cwd.weatherDescription.split(" ")
+    var temperature: LiveData<String> = Transformations.map(weatherData) { "${it.temperature.toInt()}" }
+    var tempScale: LiveData<String> = Transformations.map(weatherData) { DEGREES_FAHRENHEIT }
+    var description: LiveData<String> = Transformations.map(weatherData) { cwd ->
+        val descriptors = cwd.description.split(" ")
         val newDescriptors = mutableListOf<String>()
         descriptors.forEach { desc ->
             newDescriptors.add(
@@ -34,14 +32,14 @@ class WeatherCardViewModel: ViewModel() {
         viewModelScope.launch {
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
-                currentWeatherData.value = CurrentWeatherApi.retrofitService
+                weatherData.value = CurrentWeatherApi.retrofitService
                     .getCurrentWeatherData(latitude = "25",
                                            longitude = "25")
                 _status.value = CurrentWeatherApiStatus.DONE
             } catch (e: Exception) {
                 Log.d(logTag, "Exception Caught in WeatherCardViewModel: $e")
                 _status.value = CurrentWeatherApiStatus.ERROR
-                currentWeatherData = MutableLiveData()
+                weatherData = MutableLiveData<CurrentWeatherData>()
             }
         }
     }
