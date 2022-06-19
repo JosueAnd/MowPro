@@ -2,24 +2,24 @@ package com.example.mowpro.network
 
 import com.squareup.moshi.Json
 
-class CurrentWeatherData(@Json(name = "weather") private val weatherDescriptors: List<Map<String, Any>>,
-                         @Json(name = "main") private val weatherTemperatures: Map<String, Any>) {
+class CurrentWeatherData(@Json(name = "weather") private val descriptors: List<Map<String, Any>>,
+                         @Json(name = "main") private val temperatures: Map<String, Any>) {
 
-//    val weatherDescriptor: String = determineWeatherDescriptor("main")
-//    val weatherIconName: String = determineWeatherDescriptor("icon")
-    private val _weatherDescription: String = determineWeatherDescriptor("description")
-    val weatherDescription: String get() = _weatherDescription
+    private val _description: String = retrieveDescriptor("description")
+    private val _temperature: Double = retrieveTemperature()
+    private val _iconName: String = retrieveDescriptor("icon")
 
-    private val _weatherCurrentTemp: Double = determineWeatherTemp("temp")
-    val weatherCurrentTemp: Double get() = _weatherCurrentTemp
+    val description: String get() = _description
+    val temperature: Double get() = _temperature
+    val iconName: String get() = _iconName
 
-    private fun determineWeatherDescriptor(key: String): String {
-        val descriptors = weatherDescriptors.firstOrNull()
+    private fun retrieveDescriptor(key: String): String {
+        val descriptors = descriptors.firstOrNull()
         return descriptors?.get(key)?.toString() ?: ""
     }
 
-    private fun determineWeatherTemp(key: String): Double {
-        val temp = weatherTemperatures[key] ?: 0.0
+    private fun retrieveTemperature(): Double {
+        val temp = temperatures["temp"] ?: 0.0
         return if (temp is Number) temp.toDouble() else 0.0
     }
 }
