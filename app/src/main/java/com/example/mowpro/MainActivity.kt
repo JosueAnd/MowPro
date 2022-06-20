@@ -3,7 +3,7 @@ package com.example.mowpro
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import com.example.mowpro.controllers.WeatherCard
+import com.example.mowpro.controllers.fillWeatherLayout
 import com.example.mowpro.databinding.ActivityMainBinding
 import com.example.mowpro.viewmodels.WeatherCardViewModel
 import com.example.mowpro.viewmodels.WeatherCardViewModelFactory
@@ -20,6 +20,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        WeatherCard(this, binding.mainWeatherCard, weatherVM)
+        fillWeatherLayout(this, binding.mainWeatherCard, weatherVM)
     }
 }
