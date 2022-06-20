@@ -1,20 +1,23 @@
 package com.example.mowpro.viewmodels
 
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.example.mowpro.DEGREES_FAHRENHEIT
 import com.example.mowpro.WEATHER_ICON_URL
+import com.example.mowpro.controllers.CurrentLocation
 import com.example.mowpro.network.CurrentWeatherApi
 import com.example.mowpro.network.CurrentWeatherApiStatus
 import com.example.mowpro.network.CurrentWeatherData
 import kotlinx.coroutines.launch
 
-class WeatherCardViewModel: ViewModel() {
+class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
 
     private val logTag = "WeatherCardVM"
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
     private var weatherData = MutableLiveData<CurrentWeatherData>()
+    private val locationManager = CurrentLocation(activity, activity.applicationContext)
 
     private val _model = MutableLiveData<WeatherCardViewModel>()
     val model: LiveData<WeatherCardViewModel> = _model
@@ -36,12 +39,14 @@ class WeatherCardViewModel: ViewModel() {
     val iconLink: LiveData<String> = Transformations.map(weatherData) { WEATHER_ICON_URL.format(it.iconName) }
 
     init {
+        Log.d(logTag, locationManager.getLocation()?.latitude.toString())
+        Log.d(logTag, locationManager.getLocation()?.longitude.toString())
         viewModelScope.launch {
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
                 weatherData.value = CurrentWeatherApi.retrofitService
-                    .getCurrentWeatherData(latitude = "25",
-                                           longitude = "25")
+                    .getCurrentWeatherData(latitude = locationManager.getLocation()?.latitude.toString(),
+                                           longitude = locationManager.getLocation()?.longitude.toString())
                 _status.value = CurrentWeatherApiStatus.DONE
             } catch (e: Exception) {
                 Log.d(logTag, "Exception Caught in WeatherCardViewModel: $e")
@@ -53,7 +58,7 @@ class WeatherCardViewModel: ViewModel() {
     }
 }
 
-class WeatherCardViewModelFactory: ViewModelProvider.Factory {
+class WeatherCardViewModelFactory(private val activity: AppCompatActivity) : ViewModelProvider.Factory {
 
     private val logTag = "WeatherCardVMF"
 
@@ -61,7 +66,7 @@ class WeatherCardViewModelFactory: ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(WeatherCardViewModel::class.java)) {
             Log.d(logTag, "Factory created the ViewModel")
             @Suppress("UNCHECKED_CAST")
-            return WeatherCardViewModel() as T
+            return WeatherCardViewModel(activity = activity) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
