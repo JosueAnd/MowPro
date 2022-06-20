@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     val logTag = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
-    private val weatherVM: WeatherCardViewModel by viewModels { WeatherCardViewModelFactory() }
+    private val weatherVM: WeatherCardViewModel by viewModels { WeatherCardViewModelFactory(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
