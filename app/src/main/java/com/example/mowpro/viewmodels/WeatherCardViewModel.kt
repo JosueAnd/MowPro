@@ -17,7 +17,7 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
     private var weatherData = MutableLiveData<CurrentWeatherData>()
-    private val locationManager = CurrentLocation(activity, activity.applicationContext)
+    private val locationManager = CurrentLocation(activity)
 
     private val _model = MutableLiveData<WeatherCardViewModel>()
     val model: LiveData<WeatherCardViewModel> = _model
@@ -39,14 +39,14 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
     val iconLink: LiveData<String> = Transformations.map(weatherData) { WEATHER_ICON_URL.format(it.iconName) }
 
     init {
-        Log.d(logTag, locationManager.getLocation()?.latitude.toString())
-        Log.d(logTag, locationManager.getLocation()?.longitude.toString())
+        Log.d(logTag, locationManager.latitude.value.toString())
+        Log.d(logTag, locationManager.longitude.value.toString())
         viewModelScope.launch {
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
                 weatherData.value = CurrentWeatherApi.retrofitService
-                    .getCurrentWeatherData(latitude = locationManager.getLocation()?.latitude.toString(),
-                                           longitude = locationManager.getLocation()?.longitude.toString())
+                    .getCurrentWeatherData(latitude = locationManager.latitude.value.toString(),
+                                           longitude = locationManager.longitude.value.toString())
                 _status.value = CurrentWeatherApiStatus.DONE
             } catch (e: Exception) {
                 Log.d(logTag, "Exception Caught in WeatherCardViewModel: $e")
@@ -55,19 +55,5 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
             }
             _model.value = this@WeatherCardViewModel
         }
-    }
-}
-
-class WeatherCardViewModelFactory(private val activity: AppCompatActivity) : ViewModelProvider.Factory {
-
-    private val logTag = "WeatherCardVMF"
-
-    override fun <T: ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(WeatherCardViewModel::class.java)) {
-            Log.d(logTag, "Factory created the ViewModel")
-            @Suppress("UNCHECKED_CAST")
-            return WeatherCardViewModel(activity = activity) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
