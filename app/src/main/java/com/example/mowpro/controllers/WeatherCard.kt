@@ -20,6 +20,7 @@ fun fillWeatherLayout (activity: AppCompatActivity,
                     vm.tempScale.observe(activity) { weatherScale.text = it }
                     vm.description.observe(activity) { weatherDescription.text = it }
                     vm.iconLink.observe(activity) { weatherIcon.load(it) }
+                    vm.location.observe(activity) { weatherCityState.text = it }
                 }
             }
             CurrentWeatherApiStatus.ERROR -> {
