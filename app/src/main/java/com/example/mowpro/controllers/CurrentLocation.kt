@@ -12,12 +12,12 @@ import androidx.lifecycle.MutableLiveData
 import java.util.*
 
 
-class CurrentLocation(activity: AppCompatActivity): LocationListener {
+class CurrentLocation(activity: AppCompatActivity, listener: LocationListener) {
     private val logTag = "CurrentLocation"
 
     private val context = activity.applicationContext
     private val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)
-    private val PROVIDER = LocationManager.NETWORK_PROVIDER
+    private val locationProvider = LocationManager.NETWORK_PROVIDER
 
     private val _latitude = MutableLiveData<Double>()
     private val _longitude = MutableLiveData<Double>()
@@ -39,25 +39,27 @@ class CurrentLocation(activity: AppCompatActivity): LocationListener {
                                                   101)
             }
             if (locationManager != null) {
-                locationManager.requestLocationUpdates(PROVIDER,
+                locationManager.requestLocationUpdates(locationProvider,
+                                                       5000.toLong(), // 5 seconds
+                                                       8046.72.toFloat(), // 5 miles
+                                                       listener)
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                                                        1800000.toLong(), // 30 minutes
                                                        8046.72.toFloat(), // 5 miles
-                                                       this@CurrentLocation)
-                queryLocation()
-                queryAddress()
-                Log.d(logTag, "queryLocation: ${_latitude.value.toString()}")
-                Log.d(logTag, "queryLocation: ${_longitude.value.toString()}")
-                Log.d(logTag, "queryAddress:  ${_city.value}")
-                Log.d(logTag, "queryAddress:  ${_state.value}")
+                                                       listener)
+                update()
             }
         } catch (e: Exception) {
             Log.e(logTag, e.toString())
         }
     }
 
-    private fun queryLocation() {
-        locationManager?.getLastKnownLocation(PROVIDER).apply {
-            this?.let { onLocationChanged(it) }
+    fun update(location: Location? = locationManager?.getLastKnownLocation(locationProvider))
+    {
+        location?.let {
+            _latitude.value = it.latitude
+            _longitude.value = it.longitude
+            queryAddress()
         }
         Log.d(logTag, "location queried")
     }
@@ -76,26 +78,9 @@ class CurrentLocation(activity: AppCompatActivity): LocationListener {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return
-    }
-
-    override fun onLocationChanged(location: Location) {
-        _latitude.value = location.latitude
-        _longitude.value = location.longitude
-        queryAddress()
-    }
-
-    override fun onProviderDisabled(provider: String) {
-        if (provider == PROVIDER) {
-            Log.d(logTag, "provider disabled")
-        }
-    }
-
-    override fun onProviderEnabled(provider: String) {
-        if (provider == PROVIDER) {
-            queryLocation()
-            queryAddress()
-            Log.d(logTag, "provider enabled")
-        }
+        Log.d(logTag, "queryLocation: ${_latitude.value.toString()}")
+        Log.d(logTag, "queryLocation: ${_longitude.value.toString()}")
+        Log.d(logTag, "queryAddress:  ${_city.value}")
+        Log.d(logTag, "queryAddress:  ${_state.value}")
     }
 }
