@@ -1,5 +1,7 @@
 package com.example.mowpro.viewmodels
 
+import android.location.Location
+import android.location.LocationListener
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
@@ -11,14 +13,13 @@ import com.example.mowpro.network.CurrentWeatherApiStatus
 import com.example.mowpro.network.CurrentWeatherData
 import kotlinx.coroutines.launch
 
-class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
+class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationListener {
 
     private val logTag = "WeatherCardVM"
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
     private var weatherData = MutableLiveData<CurrentWeatherData>()
-    private val locationManager = CurrentLocation(activity)
-    private val _location = MutableLiveData<String>()
+    private val currentLocation = CurrentLocation(activity, this)
 
     private val _model = MutableLiveData<WeatherCardViewModel>()
     val model: LiveData<WeatherCardViewModel> = _model
@@ -38,21 +39,31 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
         newDescriptors.joinToString(" ")
     }
     val iconLink: LiveData<String> = Transformations.map(weatherData) { WEATHER_ICON_URL.format(it.iconName) }
-    val location: LiveData<String> = _location
-
-    private fun setCurrentLocation() { _location.value = "${locationManager.city.value}, ${locationManager.state.value}" }
+    val location: LiveData<String> = Transformations.map(currentLocation.state) { _ ->
+        var identifiers: MutableList<String>? = mutableListOf()
+        arrayOf(currentLocation.city.value, currentLocation.state.value).forEach {
+            if (it != null) {
+                identifiers!!.add(it)
+            }
+        }
+        if (identifiers!!.isEmpty()) {
+            identifiers = null
+        }
+        identifiers?.joinToString(", ") ?: "Location Unknown"
+    }
 
     init {
-        Log.d(logTag, locationManager.latitude.value.toString())
-        Log.d(logTag, locationManager.longitude.value.toString())
+        fetchWeatherData()
+    }
+
+    private fun fetchWeatherData() {
         viewModelScope.launch {
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
                 weatherData.value = CurrentWeatherApi.retrofitService
-                    .getCurrentWeatherData(latitude = locationManager.latitude.value.toString(),
-                                           longitude = locationManager.longitude.value.toString())
+                    .getCurrentWeatherData(latitude = currentLocation.latitude.value.toString(),
+                                           longitude = currentLocation.longitude.value.toString())
                 _status.value = CurrentWeatherApiStatus.DONE
-                setCurrentLocation()
             } catch (e: Exception) {
                 Log.d(logTag, "Exception Caught in WeatherCardViewModel: $e")
                 _status.value = CurrentWeatherApiStatus.ERROR
@@ -60,5 +71,22 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel() {
             }
             _model.value = this@WeatherCardViewModel
         }
+        Log.d(logTag, currentLocation.latitude.value.toString())
+        Log.d(logTag, currentLocation.longitude.value.toString())
+    }
+
+    override fun onLocationChanged(location: Location) {
+        currentLocation.update(location)
+        fetchWeatherData()
+    }
+
+    override fun onProviderDisabled(provider: String) {
+        Log.d(logTag, "provider disabled")
+    }
+
+    override fun onProviderEnabled(provider: String) {
+        currentLocation.update()
+        fetchWeatherData()
+        Log.d(logTag, "provider enabled")
     }
 }
