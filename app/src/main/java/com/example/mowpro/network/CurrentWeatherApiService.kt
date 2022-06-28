@@ -24,8 +24,8 @@ interface CurrentWeatherApiService {
     @GET(CURRENT_WEATHER_API_PATH)
     suspend fun getCurrentWeatherData(@Query("appid") api_key: String = OPEN_WEATHER_API_KEY,
                                       @Query("units") unit_type: String = "imperial",
-                                      @Query("lat") latitude: String,
-                                      @Query("lon") longitude: String): CurrentWeatherData
+                                      @Query("lat") latitude: Double,
+                                      @Query("lon") longitude: Double): CurrentWeatherData
 }
 
 object CurrentWeatherApi {
