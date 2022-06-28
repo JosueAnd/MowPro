@@ -25,10 +25,15 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
     val model: LiveData<WeatherCardViewModel> = _model
 
     val status: LiveData<CurrentWeatherApiStatus> = _status
-    var temperature: LiveData<String> = Transformations.map(weatherData) { "${it.temperature.toInt()}" }
     var tempScale: LiveData<String> = Transformations.map(weatherData) { DEGREES_FAHRENHEIT }
+    val iconLink: LiveData<String> = Transformations.map(weatherData) { WEATHER_ICON_URL.format(it.iconName) }
+    var temperature: LiveData<String> = Transformations.map(weatherData) {
+        val default = "-"
+        "${it.temperature?.toInt() ?: default}"
+    }
     var description: LiveData<String> = Transformations.map(weatherData) { cwd ->
-        val descriptors = cwd.description.split(" ")
+        val descriptors: List<String> = cwd.description?.split(" ")
+            ?: "request error".split(" ")
         val newDescriptors = mutableListOf<String>()
         descriptors.forEach { desc ->
             newDescriptors.add(
@@ -38,18 +43,16 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
         }
         newDescriptors.joinToString(" ")
     }
-    val iconLink: LiveData<String> = Transformations.map(weatherData) { WEATHER_ICON_URL.format(it.iconName) }
     val location: LiveData<String> = Transformations.map(currentLocation.state) { _ ->
-        var identifiers: MutableList<String>? = mutableListOf()
+        val identifiers: MutableList<String> = mutableListOf()
         arrayOf(currentLocation.city.value, currentLocation.state.value).forEach {
             if (it != null) {
-                identifiers!!.add(it)
+                identifiers.add(it)
+            } else {
+                identifiers.add("-")
             }
         }
-        if (identifiers!!.isEmpty()) {
-            identifiers = null
-        }
-        identifiers?.joinToString(", ") ?: "Location Unknown"
+        identifiers.joinToString(", ")
     }
 
     init {
@@ -61,18 +64,16 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
             _status.value = CurrentWeatherApiStatus.LOADING
             try {
                 weatherData.value = CurrentWeatherApi.retrofitService
-                    .getCurrentWeatherData(latitude = currentLocation.latitude.value.toString(),
-                                           longitude = currentLocation.longitude.value.toString())
+                    .getCurrentWeatherData(latitude = currentLocation.latitude.value ?: 404.0,
+                                           longitude = currentLocation.longitude.value ?: 404.0)
                 _status.value = CurrentWeatherApiStatus.DONE
             } catch (e: Exception) {
                 Log.d(logTag, "Exception Caught in WeatherCardViewModel: $e")
                 _status.value = CurrentWeatherApiStatus.ERROR
-                weatherData = MutableLiveData<CurrentWeatherData>()
+                weatherData.value = CurrentWeatherData(null, null)
             }
             _model.value = this@WeatherCardViewModel
         }
-        Log.d(logTag, currentLocation.latitude.value.toString())
-        Log.d(logTag, currentLocation.longitude.value.toString())
     }
 
     override fun onLocationChanged(location: Location) {
