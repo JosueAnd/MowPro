@@ -32,7 +32,7 @@ class CurrentLocation(activity: AppCompatActivity, listener: LocationListener) {
     init {
         try {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
+                != PackageManager.PERMISSION_GRANTED)
             {
                 ActivityCompat.requestPermissions(activity,
                                                   arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),

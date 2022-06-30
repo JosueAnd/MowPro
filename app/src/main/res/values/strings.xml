@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MowPro</string>
     <string name="weather_icon">Weather Icon</string>
+
+    <!-- Preference Titles -->
+    <string name="root_pref_title">Preferences</string>
+    <string name="temp_scale_title">Temperature Scale</string>
 </resources>
