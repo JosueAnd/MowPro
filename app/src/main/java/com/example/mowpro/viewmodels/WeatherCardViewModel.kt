@@ -18,7 +18,7 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
     private val logTag = "WeatherCardVM"
 
     private val _status = MutableLiveData<CurrentWeatherApiStatus>()
-    private var weatherData = MutableLiveData<CurrentWeatherData>()
+    private val weatherData = MutableLiveData<CurrentWeatherData>()
     private val currentLocation = CurrentLocation(activity, this)
 
     private val _model = MutableLiveData<WeatherCardViewModel>()
@@ -56,6 +56,7 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
     }
 
     init {
+        _model.value = this@WeatherCardViewModel
         fetchWeatherData()
     }
 
@@ -72,7 +73,6 @@ class WeatherCardViewModel(activity: AppCompatActivity) : ViewModel(), LocationL
                 _status.value = CurrentWeatherApiStatus.ERROR
                 weatherData.value = CurrentWeatherData(null, null)
             }
-            _model.value = this@WeatherCardViewModel
         }
     }
 
